@@ -1,7 +1,8 @@
+import { IUser, IRequestInfo } from './../types';
 import { methods } from './../constants';
 import { IncomingMessage, ServerResponse } from 'http';
 import { statusCodes } from '../constants';
-import { findAll } from './users.repositories';
+import { create, findAll } from './users.repositories';
 
 const getUsers = (res: ServerResponse<IncomingMessage>) => {
   const users = findAll();
@@ -11,8 +12,18 @@ const getUsers = (res: ServerResponse<IncomingMessage>) => {
   res.end();
 };
 
-const userRouter = (req: IncomingMessage, res: ServerResponse<IncomingMessage>) => {
+const createUser = (body: IUser, res: ServerResponse<IncomingMessage>) => {
+  const user: IUser = create(body);
+
+  res.writeHead(statusCodes.OK, { 'Content-Type': 'application/json' });
+  res.write(JSON.stringify(user));
+  res.end();
+};
+
+const userRouter = (req: IncomingMessage, res: ServerResponse<IncomingMessage>, reqInfo: IRequestInfo) => {
   const { method, url } = req;
+  const { path, params, body } = reqInfo;
+
   console.log(`Url is ${url} and Method is ${method}`);
 
   switch (method) {
@@ -20,7 +31,7 @@ const userRouter = (req: IncomingMessage, res: ServerResponse<IncomingMessage>) 
       getUsers(res);
       break;
     case methods.post:
-      console.log('post', req.url);
+      createUser(body, res);
       break;
     case methods.push:
       console.log('put', req.url);

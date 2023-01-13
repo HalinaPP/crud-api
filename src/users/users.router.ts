@@ -1,8 +1,9 @@
-import { IUser, IRequestInfo } from './../types';
+import { IUser, IRequestInfo, IUserData } from './../types';
 import { methods } from './../constants';
 import { IncomingMessage, ServerResponse } from 'http';
 import { statusCodes } from '../constants';
 import { create, findAll } from './users.repositories';
+import { validatePostField } from '../validate/users';
 
 const getUsers = (res: ServerResponse<IncomingMessage>) => {
   const users = findAll();
@@ -12,12 +13,20 @@ const getUsers = (res: ServerResponse<IncomingMessage>) => {
   res.end();
 };
 
-const createUser = (body: IUser, res: ServerResponse<IncomingMessage>) => {
-  const user: IUser = create(body);
+const createUser = (body: IUserData, res: ServerResponse<IncomingMessage>) => {
+  try {
+    validatePostField(body);
 
-  res.writeHead(statusCodes.OK, { 'Content-Type': 'application/json' });
-  res.write(JSON.stringify(user));
-  res.end();
+    const user: IUser = create(body);
+
+    res.writeHead(statusCodes.CREATED, { 'Content-Type': 'application/json' });
+    res.write(JSON.stringify(user));
+    res.end();
+  } catch (err) {
+    res.writeHead(statusCodes.BAD_REQUEST, { 'Content-Type': 'application/json' });
+    res.write(JSON.stringify('Create user error:' + err.message));
+    res.end();
+  }
 };
 
 const userRouter = (req: IncomingMessage, res: ServerResponse<IncomingMessage>, reqInfo: IRequestInfo) => {

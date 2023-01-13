@@ -10,8 +10,8 @@ const router = (req: IncomingMessage, res: ServerResponse<IncomingMessage>) => {
     userRouter(req, res);
   } else {
     console.log('error', req.url);
-    res.writeHead(statusCodes.BAD_REQUEST, { 'Content-Type': 'application/json' });
-    res.write(JSON.stringify({ message: 'Error' }));
+    res.writeHead(statusCodes.NOT_FOUND, { 'Content-Type': 'application/json' });
+    res.write(JSON.stringify({ message: 'Error! This page does not exists' }));
     res.end();
   }
 };

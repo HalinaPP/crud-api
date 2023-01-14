@@ -1,8 +1,9 @@
-import { API_URL_CHUNK, USERS_URL_CHUNK, statusCodes } from './constants';
+import { userBaseUrl } from './constants';
 import { IncomingMessage, ServerResponse } from 'http';
 import userRouter from './users/users.router';
 import { IRequestInfo, IUser } from './types';
 import { sendResponse } from './helpers';
+import { statusCodes } from './status_constants';
 
 const getUrlParams = (url: string, userPathname: string) => {
   const paramsString: string = url.slice(userPathname.length + 1);
@@ -13,10 +14,9 @@ const getUrlParams = (url: string, userPathname: string) => {
 
 const router = (req: IncomingMessage, res: ServerResponse<IncomingMessage>) => {
   const { url } = req;
-  const userPathname = `${API_URL_CHUNK}${USERS_URL_CHUNK}`;
-  const urlParams = getUrlParams(url, userPathname);
+  const urlParams = getUrlParams(url, userBaseUrl);
 
-  const isUsersPath = url === userPathname || url.startsWith(`${userPathname}/`);
+  const isUsersPath = url === userBaseUrl || url.startsWith(`${userBaseUrl}/`);
 
   if (isUsersPath) {
     let currentBody = '';
@@ -27,7 +27,7 @@ const router = (req: IncomingMessage, res: ServerResponse<IncomingMessage>) => {
 
     req.on('end', () => {
       const body: IUser = JSON.parse(currentBody);
-      const reqInfo: IRequestInfo = { path: userPathname, params: urlParams, body };
+      const reqInfo: IRequestInfo = { path: userBaseUrl, params: urlParams, body };
 
       userRouter(req, res, reqInfo);
     });

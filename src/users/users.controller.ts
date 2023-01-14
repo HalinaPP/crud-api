@@ -1,9 +1,9 @@
-import { IUser, IUserData } from '../types';
 import { IncomingMessage, ServerResponse } from 'http';
-import { statusCodes } from '../constants';
-import { create, deleteUser, find, findAll, update } from './users.repository';
+import { IUser, IUserData } from '../types';
+import { statusCodes, Messages } from '../status_constants';
 import { validateId, validateUserData } from '../validate/users';
 import { sendResponse } from '../helpers';
+import { create, deleteUser, find, findAll, update } from './users.repository';
 
 export const methodNotImplemented = (method: string, res: ServerResponse<IncomingMessage>) => {
   sendResponse(statusCodes.BAD_REQUEST, `${method} is not implemented`, res);
@@ -16,7 +16,7 @@ export const getUserById = (id: string, res: ServerResponse<IncomingMessage>) =>
     const user = find(id);
 
     if (!user) {
-      sendResponse(statusCodes.NOT_FOUND, 'User not found', res);
+      sendResponse(statusCodes.NOT_FOUND, Messages.NOT_FOUND, res);
       return;
     }
 
@@ -52,7 +52,7 @@ export const updateUser = (id: string, body: IUserData, res: ServerResponse<Inco
     const isUserUpdated: boolean = update(id, body);
 
     if (!isUserUpdated) {
-      sendResponse(statusCodes.NOT_FOUND, 'User not found', res);
+      sendResponse(statusCodes.NOT_FOUND, Messages.NOT_FOUND, res);
       return;
     }
 
@@ -69,7 +69,7 @@ export const deleteUserById = (id: string, res: ServerResponse<IncomingMessage>)
     const isUserDeleted: boolean = deleteUser(id);
 
     if (!isUserDeleted) {
-      sendResponse(statusCodes.NOT_FOUND, 'User not found', res);
+      sendResponse(statusCodes.NOT_FOUND, Messages.NOT_FOUND, res);
       return;
     }
 

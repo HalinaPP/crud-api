@@ -1,4 +1,4 @@
-import { IUser, IUserData } from './../types';
+import { IUser, IUserData } from '../types';
 import { v4 as uuidv4 } from 'uuid';
 import { users as initialUsers } from './users.data';
 

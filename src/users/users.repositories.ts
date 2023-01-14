@@ -1,4 +1,4 @@
-import { IUser } from './../types';
+import { IUser, IUserData } from './../types';
 import { v4 as uuidv4 } from 'uuid';
 import { users as initialUsers } from './users.data';
 
@@ -8,7 +8,7 @@ export const findAll = (): IUser[] => {
   return users;
 };
 
-export const find = (id: string): IUser => {
+export const find = (id: string): IUser | undefined => {
   return users.find((user) => user.id === id);
 };
 
@@ -24,18 +24,18 @@ export const deleteUser = (id: string): boolean => {
   return true;
 };
 
-export const update = (userForUpdate: IUser): boolean => {
-  const userIndex = users.findIndex((user) => user.id === userForUpdate.id);
+export const update = (id: string, userForUpdate: IUserData): boolean => {
+  const userIndex = users.findIndex((user) => user.id === id);
 
   if (userIndex < 0) {
     return false;
   }
 
-  users[userIndex] = userForUpdate;
+  users[userIndex] = { id, ...userForUpdate };
   return true;
 };
 
-export const create = (userData: Partial<IUser>): IUser => {
+export const create = (userData: IUserData): IUser => {
   const id = uuidv4();
   const { username, age, hobbies } = userData;
 

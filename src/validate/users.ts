@@ -1,4 +1,4 @@
-import { IUserData } from './../types';
+import { IUser, IUserData } from './../types';
 
 const validateAge = (age) => {
   if (!age || typeof age !== 'number' || age < 1 || age > 120) {
@@ -20,7 +20,14 @@ const validateHobbies = (hobbies) => {
   }
 };
 
-export const validatePostField = (user: IUserData): void => {
+// check if uuid
+export const validateId = (id) => {
+  if (!id || typeof id !== 'string' || id === '') {
+    throw new Error('Id is incorrect!');
+  }
+};
+
+export const validateUserData = (user: IUserData): void => {
   validateAge(user.age);
   validateUsername(user.username);
   validateHobbies(user.hobbies);

@@ -12,6 +12,6 @@ export interface IUser extends IUserData {
 
 export interface IRequestInfo {
   path: string;
-  params: ParsedUrlQuery;
+  params: string[];
   body: IUser;
 }

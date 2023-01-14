@@ -3,11 +3,10 @@ import { IncomingMessage, ServerResponse } from 'http';
 import { statusCodes } from '../constants';
 import { create, deleteUser, find, findAll, update } from './users.repository';
 import { validateId, validateUserData } from '../validate/users';
+import { sendResponse } from '../helpers';
 
-const sendResponse = (statusCode: number, body: any, res: ServerResponse<IncomingMessage>) => {
-  res.writeHead(statusCode, { 'Content-Type': 'application/json' });
-  res.write(JSON.stringify(body));
-  res.end();
+export const methodNotImplemented = (method: string, res: ServerResponse<IncomingMessage>) => {
+  sendResponse(statusCodes.BAD_REQUEST, `${method} is not implemented`, res);
 };
 
 export const getUserById = (id: string, res: ServerResponse<IncomingMessage>) => {

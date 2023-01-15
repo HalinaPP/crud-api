@@ -6,7 +6,6 @@ import { statusCodes, Messages } from './status_constants';
 
 export const app = http.createServer((req, res) => {
   try {
-    console.log('Server started');
     router(req, res);
   } catch (error) {
     sendResponse(statusCodes.INTERNAL_SERVER_ERROR, Messages.INTERNAL_SERVER_ERROR, res);

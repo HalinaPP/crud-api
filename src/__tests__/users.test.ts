@@ -19,6 +19,10 @@ const fakeUserForUpdate = {
 const expectedUser = { id: undefined, ...fakeUser };
 
 describe('Check all API methods', () => {
+  afterAll(() => {
+    app.close();
+  });
+
   it('should return an empty array ', async () => {
     const emptyUser = [];
 
@@ -86,6 +90,10 @@ describe('Check all API methods', () => {
 describe('Return error when user does not exist', () => {
   let expectedId;
 
+  afterAll(() => {
+    app.close();
+  });
+
   it('should create a new user', async () => {
     const res = await supertest(app).post(userBaseUrl).send(JSON.stringify(fakeUser));
 
@@ -138,6 +146,10 @@ describe('Return error when user does not exist', () => {
 
 describe('Check API with bad data', () => {
   const badId = '123';
+
+  afterAll(() => {
+    app.close();
+  });
 
   it('should return error when age is not set', async () => {
     const badAgeFakeUser = { ...fakeUser };

@@ -1,14 +1,21 @@
 import http from 'http';
 import { PORT } from './constants';
+import { sendResponse } from './helpers';
 import router from './router';
+import { statusCodes, Messages } from './status_constants';
 
 export const app = http.createServer((req, res) => {
-  console.log('Server started');
-  router(req, res);
+  try {
+    console.log('Server started');
+    router(req, res);
+  } catch (error) {
+    sendResponse(statusCodes.INTERNAL_SERVER_ERROR, Messages.INTERNAL_SERVER_ERROR, res);
+  }
 });
 
-app.on('clientError', (err, socket) => {
-  socket.end('HTTP/1.1 400 Bad Request\r\n');
+process.on('uncaughtException', (error: Error) => {
+  console.error(error.stack);
+  process.exit(1);
 });
 
 app.listen(PORT);

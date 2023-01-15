@@ -33,7 +33,7 @@ const userRouter = (req: IncomingMessage, res: ServerResponse<IncomingMessage>, 
       deleteUserById(id, res);
       break;
     default:
-      methodNotImplemented(method, res);
+      methodNotImplemented(res);
       break;
   }
 };

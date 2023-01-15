@@ -2,15 +2,8 @@ import { userBaseUrl } from './constants';
 import { IncomingMessage, ServerResponse } from 'http';
 import userRouter from './users/users.router';
 import { IRequestInfo, IUser } from './types';
-import { sendResponse } from './helpers';
+import { getUrlParams, sendResponse } from './helpers';
 import { statusCodes, Messages } from './status_constants';
-
-const getUrlParams = (url: string, userPathname: string) => {
-  const paramsString: string = url.slice(userPathname.length + 1);
-  const params = paramsString.split('/');
-
-  return params;
-};
 
 const router = (req: IncomingMessage, res: ServerResponse<IncomingMessage>) => {
   const { url } = req;
@@ -29,7 +22,11 @@ const router = (req: IncomingMessage, res: ServerResponse<IncomingMessage>) => {
       const body: IUser = JSON.parse(currentBody);
       const reqInfo: IRequestInfo = { path: userBaseUrl, params: urlParams, body };
 
-      userRouter(req, res, reqInfo);
+      try {
+        userRouter(req, res, reqInfo);
+      } catch (error) {
+        sendResponse(statusCodes.INTERNAL_SERVER_ERROR, Messages.INTERNAL_SERVER_ERROR, res);
+      }
     });
   } else {
     sendResponse(statusCodes.NOT_FOUND, Messages.PAGE_NOT_EXISTS, res);

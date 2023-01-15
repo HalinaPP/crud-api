@@ -22,7 +22,7 @@ export const getUserById = (id: string, res: ServerResponse<IncomingMessage>) =>
 
     sendResponse(statusCodes.OK, user, res);
   } catch (err) {
-    sendResponse(statusCodes.BAD_REQUEST, 'Get user error:' + err.message, res);
+    sendResponse(statusCodes.BAD_REQUEST, err.message, res);
   }
 };
 
@@ -40,7 +40,7 @@ export const createUser = (body: IUserData, res: ServerResponse<IncomingMessage>
 
     sendResponse(statusCodes.CREATED, user, res);
   } catch (err) {
-    sendResponse(statusCodes.BAD_REQUEST, 'Create user error:' + err.message, res);
+    sendResponse(statusCodes.BAD_REQUEST, err.message, res);
   }
 };
 
@@ -58,7 +58,7 @@ export const updateUser = (id: string, body: IUserData, res: ServerResponse<Inco
 
     sendResponse(statusCodes.OK, { id, ...body }, res);
   } catch (err) {
-    sendResponse(statusCodes.BAD_REQUEST, 'Create user error:' + err.message, res);
+    sendResponse(statusCodes.BAD_REQUEST, err.message, res);
   }
 };
 
@@ -75,6 +75,6 @@ export const deleteUserById = (id: string, res: ServerResponse<IncomingMessage>)
 
     sendResponse(statusCodes.NO_CONTENT, '', res);
   } catch (err) {
-    sendResponse(statusCodes.BAD_REQUEST, 'Delete user error:' + err.message, res);
+    sendResponse(statusCodes.BAD_REQUEST, err.message, res);
   }
 };

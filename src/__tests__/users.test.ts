@@ -2,6 +2,7 @@ import supertest from 'supertest';
 import { app } from '../server';
 import { userBaseUrl } from '../constants';
 import { statusCodes, Messages } from '../status_constants';
+import { incorrectValueMessages } from '../validate/error-messages';
 
 const fakeUser = {
   username: 'fakeUser',
@@ -17,7 +18,7 @@ const fakeUserForUpdate = {
 
 const expectedUser = { id: undefined, ...fakeUser };
 
-describe('check all API methods', () => {
+describe('Check all API methods', () => {
   it('should return an empty array ', async () => {
     const emptyUser = [];
 
@@ -79,5 +80,179 @@ describe('check all API methods', () => {
 
     expect(res.statusCode).toBe(statusCodes.NOT_FOUND);
     expect(res.body).toBe(Messages.NOT_FOUND);
+  });
+});
+
+describe('Return error when user does not exist', () => {
+  let expectedId;
+
+  it('should create a new user', async () => {
+    const res = await supertest(app).post(userBaseUrl).send(JSON.stringify(fakeUser));
+
+    expectedId = res.body.id;
+    expectedUser.id = expectedId;
+
+    expect(res.statusCode).toBe(statusCodes.CREATED);
+    expect(res.body).toEqual(expectedUser);
+  });
+
+  it('should return created user', async () => {
+    const userIdUrl = `${userBaseUrl}/${expectedId}`;
+    const res = await supertest(app).get(userIdUrl).send(JSON.stringify(''));
+
+    expect(res.statusCode).toBe(statusCodes.OK);
+    expect(res.body).toEqual(expectedUser);
+  });
+
+  it('should delete user', async () => {
+    const userIdUrl = `${userBaseUrl}/${expectedId}`;
+
+    const res = await supertest(app).delete(userIdUrl).send(JSON.stringify(''));
+
+    expect(res.statusCode).toBe(statusCodes.NO_CONTENT);
+  });
+
+  it('should return 404 error when get user', async () => {
+    const userIdUrl = `${userBaseUrl}/${expectedId}`;
+    const res = await supertest(app).get(userIdUrl).send(JSON.stringify(''));
+
+    expect(res.statusCode).toBe(statusCodes.NOT_FOUND);
+    expect(res.body).toEqual(Messages.NOT_FOUND);
+  });
+
+  it('should return 404 error when update', async () => {
+    const userIdUrl = `${userBaseUrl}/${expectedId}`;
+    const res = await supertest(app).put(userIdUrl).send(JSON.stringify(fakeUserForUpdate));
+
+    expect(res.statusCode).toBe(statusCodes.NOT_FOUND);
+    expect(res.body).toEqual(Messages.NOT_FOUND);
+  });
+
+  it('should return 404 error when delete', async () => {
+    const userIdUrl = `${userBaseUrl}/${expectedId}`;
+    const res = await supertest(app).delete(userIdUrl).send(JSON.stringify(''));
+
+    expect(res.statusCode).toBe(statusCodes.NOT_FOUND);
+  });
+});
+
+describe('Check API with bad data', () => {
+  const badId = '123';
+
+  it('should return error when age is not set', async () => {
+    const badAgeFakeUser = { ...fakeUser };
+    delete badAgeFakeUser.age;
+
+    const res = await supertest(app).post(userBaseUrl).send(JSON.stringify(badAgeFakeUser));
+
+    expect(res.statusCode).toBe(statusCodes.BAD_REQUEST);
+    expect(res.body).toEqual(incorrectValueMessages.age);
+  });
+
+  it('should return error when age is not number', async () => {
+    const badAgeFakeUser = { ...fakeUser, age: 'text' };
+
+    const res = await supertest(app).post(userBaseUrl).send(JSON.stringify(badAgeFakeUser));
+
+    expect(res.statusCode).toBe(statusCodes.BAD_REQUEST);
+    expect(res.body).toEqual(incorrectValueMessages.age);
+  });
+
+  it('should return error when age is less than 1', async () => {
+    const badAgeFakeUser = { ...fakeUser, age: 0 };
+
+    const res = await supertest(app).post(userBaseUrl).send(JSON.stringify(badAgeFakeUser));
+
+    expect(res.statusCode).toBe(statusCodes.BAD_REQUEST);
+    expect(res.body).toEqual(incorrectValueMessages.age);
+  });
+
+  it('should return error when age is more than 120', async () => {
+    const badAgeFakeUser = { ...fakeUser, age: 121 };
+
+    const res = await supertest(app).post(userBaseUrl).send(JSON.stringify(badAgeFakeUser));
+
+    expect(res.statusCode).toBe(statusCodes.BAD_REQUEST);
+    expect(res.body).toEqual(incorrectValueMessages.age);
+  });
+
+  it('should return error when username is not set', async () => {
+    const badAgeFakeUser = { ...fakeUser };
+    delete badAgeFakeUser.username;
+
+    const res = await supertest(app).post(userBaseUrl).send(JSON.stringify(badAgeFakeUser));
+
+    expect(res.statusCode).toBe(statusCodes.BAD_REQUEST);
+    expect(res.body).toEqual(incorrectValueMessages.username);
+  });
+
+  it('should return error when username is empty', async () => {
+    const badAgeFakeUser = { ...fakeUser, username: '' };
+
+    const res = await supertest(app).post(userBaseUrl).send(JSON.stringify(badAgeFakeUser));
+
+    expect(res.statusCode).toBe(statusCodes.BAD_REQUEST);
+    expect(res.body).toEqual(incorrectValueMessages.username);
+  });
+
+  it('should return error when username is not string', async () => {
+    const badAgeFakeUser = { ...fakeUser, username: 34 };
+
+    const res = await supertest(app).post(userBaseUrl).send(JSON.stringify(badAgeFakeUser));
+
+    expect(res.statusCode).toBe(statusCodes.BAD_REQUEST);
+    expect(res.body).toEqual(incorrectValueMessages.username);
+  });
+
+  it('should return error when hobbies is not set', async () => {
+    const badAgeFakeUser = { ...fakeUser };
+    delete badAgeFakeUser.hobbies;
+
+    const res = await supertest(app).post(userBaseUrl).send(JSON.stringify(badAgeFakeUser));
+
+    expect(res.statusCode).toBe(statusCodes.BAD_REQUEST);
+    expect(res.body).toEqual(incorrectValueMessages.hobbies);
+  });
+
+  it('should return error when hobbies is not an array', async () => {
+    const badAgeFakeUser = { ...fakeUser, hobbies: 'one hobby' };
+
+    const res = await supertest(app).post(userBaseUrl).send(JSON.stringify(badAgeFakeUser));
+
+    expect(res.statusCode).toBe(statusCodes.BAD_REQUEST);
+    expect(res.body).toEqual(incorrectValueMessages.hobbies);
+  });
+
+  it('should return error when hobby values is not string', async () => {
+    const badAgeFakeUser = { ...fakeUser, hobbies: ['one hobby', 23] };
+
+    const res = await supertest(app).post(userBaseUrl).send(JSON.stringify(badAgeFakeUser));
+
+    expect(res.statusCode).toBe(statusCodes.BAD_REQUEST);
+    expect(res.body).toEqual(incorrectValueMessages.hobbies);
+  });
+
+  it('get method should return error when wrong id format', async () => {
+    const userIdUrl = `${userBaseUrl}/${badId}`;
+    const res = await supertest(app).get(userIdUrl).send(JSON.stringify(''));
+
+    expect(res.statusCode).toBe(statusCodes.BAD_REQUEST);
+    expect(res.body).toEqual(incorrectValueMessages.id);
+  });
+
+  it('put method should return error when wrong id format', async () => {
+    const userIdUrl = `${userBaseUrl}/${badId}`;
+    const res = await supertest(app).put(userIdUrl).send(JSON.stringify(''));
+
+    expect(res.statusCode).toBe(statusCodes.BAD_REQUEST);
+    expect(res.body).toEqual(incorrectValueMessages.id);
+  });
+
+  it('delete method should return error when wrong id format', async () => {
+    const userIdUrl = `${userBaseUrl}/${badId}`;
+    const res = await supertest(app).get(userIdUrl).send(JSON.stringify(''));
+
+    expect(res.statusCode).toBe(statusCodes.BAD_REQUEST);
+    expect(res.body).toEqual(incorrectValueMessages.id);
   });
 });

@@ -1,14 +1,16 @@
-import { IUser, IUserData } from './../types';
+import { validate } from 'uuid';
+import { IUserData } from './../types';
+import { incorrectValueMessages } from './error-messages';
 
 const validateAge = (age) => {
   if (!age || typeof age !== 'number' || age < 1 || age > 120) {
-    throw new Error('User age is incorrect!');
+    throw new Error(incorrectValueMessages.age);
   }
 };
 
 const validateUsername = (username) => {
   if (!username || typeof username !== 'string' || username === '') {
-    throw new Error('Username is incorrect!');
+    throw new Error(incorrectValueMessages.username);
   }
 };
 
@@ -16,14 +18,13 @@ const isArrayStrings = (array) => array.every((value) => typeof value === 'strin
 
 const validateHobbies = (hobbies) => {
   if (!hobbies || !Array.isArray(hobbies) || (hobbies.length > 0 && !isArrayStrings(hobbies))) {
-    throw new Error('Hobbies data is incorrect!');
+    throw new Error(incorrectValueMessages.hobbies);
   }
 };
 
-// check if uuid
 export const validateId = (id) => {
-  if (!id || typeof id !== 'string' || id === '') {
-    throw new Error('Id is incorrect!');
+  if (!id || !validate(id) || id === '') {
+    throw new Error(incorrectValueMessages.id);
   }
 };
 

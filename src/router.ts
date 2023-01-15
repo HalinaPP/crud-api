@@ -3,7 +3,7 @@ import { IncomingMessage, ServerResponse } from 'http';
 import userRouter from './users/users.router';
 import { IRequestInfo, IUser } from './types';
 import { sendResponse } from './helpers';
-import { statusCodes } from './status_constants';
+import { statusCodes, Messages } from './status_constants';
 
 const getUrlParams = (url: string, userPathname: string) => {
   const paramsString: string = url.slice(userPathname.length + 1);
@@ -32,7 +32,7 @@ const router = (req: IncomingMessage, res: ServerResponse<IncomingMessage>) => {
       userRouter(req, res, reqInfo);
     });
   } else {
-    sendResponse(statusCodes.NOT_FOUND, 'Error! This page does not exists', res);
+    sendResponse(statusCodes.NOT_FOUND, Messages.PAGE_NOT_EXISTS, res);
   }
 };
 

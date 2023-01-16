@@ -84,3 +84,7 @@ A simple CRUD API using in-memory database underneath.
    9.2. all methods return status-code=404 for non-existing user
    
    9.3. data validate correctly and return status-code=400 and appropriate message for bad request data
+
+To see tests result, you need to run next command
+
+    **npm run test**

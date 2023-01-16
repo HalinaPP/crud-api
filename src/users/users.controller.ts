@@ -6,7 +6,7 @@ import { sendResponse } from '../helpers';
 import { create, deleteUser, find, findAll, update } from './users.repository';
 
 export const methodNotImplemented = (res: ServerResponse<IncomingMessage>) => {
-  sendResponse(statusCodes.NOT_FOUND, Messages.NOT_FOUND, res);
+  sendResponse(statusCodes.NOT_FOUND, Messages.METHOD_NOT_FOUND, res);
 };
 
 export const getUserById = (id: string, res: ServerResponse<IncomingMessage>) => {

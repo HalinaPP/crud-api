@@ -29,7 +29,7 @@ const router = (req: IncomingMessage, res: ServerResponse<IncomingMessage>) => {
       }
     });
   } else {
-    sendResponse(statusCodes.NOT_FOUND, Messages.PAGE_NOT_EXISTS, res);
+    sendResponse(statusCodes.NOT_FOUND, Messages.PATH_NOT_FOUND, res);
   }
 };
 

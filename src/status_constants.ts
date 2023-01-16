@@ -9,6 +9,6 @@ export const statusCodes = {
 
 export const Messages = {
   NOT_FOUND: 'User not found',
-  PAGE_NOT_EXISTS: 'Error! This page does not exists',
+  PAGE_NOT_EXISTS: 'Error! Path not found',
   INTERNAL_SERVER_ERROR: 'Internal Server Error',
 };

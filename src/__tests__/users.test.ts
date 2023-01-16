@@ -18,7 +18,7 @@ const fakeUserForUpdate = {
 
 const expectedUser = { id: undefined, ...fakeUser };
 
-describe('Check all API methods', () => {
+describe('All API methods work correctly', () => {
   afterAll(() => {
     app.close();
   });

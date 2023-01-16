@@ -19,10 +19,10 @@ const router = (req: IncomingMessage, res: ServerResponse<IncomingMessage>) => {
     });
 
     req.on('end', () => {
-      const body: IUser = JSON.parse(currentBody);
-      const reqInfo: IRequestInfo = { path: userBaseUrl, params: urlParams, body };
-
       try {
+        const body: IUser = JSON.parse(currentBody);
+        const reqInfo: IRequestInfo = { path: userBaseUrl, params: urlParams, body };
+
         userRouter(req, res, reqInfo);
       } catch (error) {
         sendResponse(statusCodes.INTERNAL_SERVER_ERROR, Messages.INTERNAL_SERVER_ERROR, res);

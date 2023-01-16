@@ -87,4 +87,4 @@ A simple CRUD API using in-memory database underneath.
 
 To see tests result, you need to run next command
 
-    **npm run test**
+  **npm run test**

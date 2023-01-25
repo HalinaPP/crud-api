@@ -13,5 +13,5 @@ export interface IUser extends IUserData {
 export interface IRequestInfo {
   path: string;
   params: string[];
-  body: IUser;
+  body: string;
 }

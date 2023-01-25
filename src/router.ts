@@ -1,7 +1,7 @@
 import { userBaseUrl } from './constants';
 import { IncomingMessage, ServerResponse } from 'http';
 import userRouter from './users/users.router';
-import { IRequestInfo, IUser } from './types';
+import { IRequestInfo } from './types';
 import { getUrlParams, sendResponse } from './helpers';
 import { statusCodes, Messages } from './status_constants';
 
@@ -20,8 +20,7 @@ const router = (req: IncomingMessage, res: ServerResponse<IncomingMessage>) => {
 
     req.on('end', () => {
       try {
-        const body: IUser = JSON.parse(currentBody);
-        const reqInfo: IRequestInfo = { path: userBaseUrl, params: urlParams, body };
+        const reqInfo: IRequestInfo = { path: userBaseUrl, params: urlParams, body: currentBody };
 
         userRouter(req, res, reqInfo);
       } catch (error) {

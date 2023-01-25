@@ -12,7 +12,8 @@ import {
 
 const userRouter = (req: IncomingMessage, res: ServerResponse<IncomingMessage>, reqInfo: IRequestInfo) => {
   const { method } = req;
-  const { params, body } = reqInfo;
+  const { params } = reqInfo;
+
   const id = params[0];
 
   switch (method) {
@@ -24,10 +25,10 @@ const userRouter = (req: IncomingMessage, res: ServerResponse<IncomingMessage>, 
       }
       break;
     case methods.post:
-      createUser(body, res);
+      createUser(JSON.parse(reqInfo.body), res);
       break;
     case methods.put:
-      updateUser(id, body, res);
+      updateUser(id, JSON.parse(reqInfo.body), res);
       break;
     case methods.delete:
       deleteUserById(id, res);
